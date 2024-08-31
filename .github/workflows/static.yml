@@ -22,10 +22,6 @@ concurrency:
 jobs:
   # Job for deploying the blog branch to blog.zufarovas.me
   deploy-blog:
-    if: github.ref == 'refs/heads/blog'  # Only runs for the blog branch
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
       - name: Debug Output
@@ -33,17 +29,19 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          ref: blog  # Ensure we're checking out the blog branch
-
+        if: github.ref == 'refs/heads/blog'
+      
       - name: Setup Pages for Blog
         uses: actions/configure-pages@v5
+        if: github.ref == 'refs/heads/blog'
 
       - name: Upload artifact for Blog
         uses: actions/upload-pages-artifact@v3
         with:
           path: '.'
+        if: github.ref == 'refs/heads/blog'
 
       - name: Deploy to GitHub Pages
-        id: deployment
         uses: actions/deploy-pages@v4
+        if: github.ref == 'refs/heads/blog'
+        id: deployment
