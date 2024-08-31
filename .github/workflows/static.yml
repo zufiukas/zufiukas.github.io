@@ -20,30 +20,33 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  # Job for deploying the main branch to zufarovas.me
-  deploy-main:
-    if: github.ref == 'refs/heads/main'  # Only runs for the main branch
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  # Job for deploying the blog branch to blog.zufarovas.me
+  deploy-blog:
     runs-on: ubuntu-latest
     steps:
+      - name: Debug Output
+        run: echo "The current branch is ${{ github.ref }}"
+      
       - name: Checkout
+        if: github.ref == 'refs/heads/blog'
         uses: actions/checkout@v4
-        
-      - name: Setup Pages for Main
+
+      - name: Setup Pages for Blog
+        if: github.ref == 'refs/heads/blog'
         uses: actions/configure-pages@v5
-        
-      - name: Upload artifact for Main
+
+      - name: Upload artifact for Blog
+        if: github.ref == 'refs/heads/blog'
         uses: actions/upload-pages-artifact@v3
         with:
-          # Upload entire repository for main branch
           path: '.'
 
       - name: Deploy to GitHub Pages
+        if: github.ref == 'refs/heads/blog'
         id: deployment
         uses: actions/deploy-pages@v4
 
+        
   # Job for deploying the blog branch to blog.zufarovas.me
   deploy-blog:
     if: github.ref == 'refs/heads/blog'  # Only runs for the blog branch
